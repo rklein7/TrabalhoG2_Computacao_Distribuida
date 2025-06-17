@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat em Tempo Real</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1><i class="fas fa-comments"></i> Chat em Tempo Real</h1>
+      <div class="user-input">
+        <label><i class="fas fa-user"></i> Seu nome:</label>
+        <input id="username" placeholder="Digite seu nome" autocomplete="off" />
+      </div>
+      <ul id="messages"></ul>
+      <div id="chat">
+        <input
+          id="messageInput"
+          placeholder="Digite sua mensagem"
+          autocomplete="off"
+          onkeypress="if(event.key === 'Enter') sendMessage()"
+        />
+        <button onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i> Enviar
+        </button>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const usernameInput = document.getElementById("username");
+      const messageInput = document.getElementById("messageInput");
+      const messagesList = document.getElementById("messages");
+
+      fetch("/api/messages")
+        .then((res) => res.json())
+        .then((messages) => messages.forEach(addMessage));
+
+      socket.on("chat message", addMessage);
+
+      function addMessage(msg) {
+        const item = document.createElement("li");
+        const id = msg.id;
+        item.setAttribute("data-id", id);
+
+        const time = msg.timestamp
+          ? new Date(msg.timestamp).toLocaleTimeString()
+          : "";
+
+        const textSpan = document.createElement("span");
+        textSpan.textContent = `[${time}] ${msg.user}: ${msg.text}`;
+        textSpan.classList.add("text-span");
+
+        const actions = document.createElement("div");
+        actions.classList.add("actions");
+
+        const editBtn = document.createElement("button");
+        editBtn.classList.add("action-btn", "edit-btn");
+        editBtn.title = "Editar";
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        editBtn.onclick = async () => {
+          const newText = prompt("Editar mensagem:", msg.text);
+          if (!newText || newText.trim() === msg.text) return;
+
+          const res = await fetch(`/api/messages/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: newText.trim() }),
+          });
+          if (!res.ok) return alert("Erro ao editar.");
+          textSpan.textContent = `[${time}] ${msg.user}: ${newText.trim()}`;
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("action-btn", "delete-btn");
+        deleteBtn.title = "Apagar";
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteBtn.onclick = async () => {
+          const confirmDelete = confirm(
+            "Deseja realmente apagar esta mensagem?"
+          );
+          if (!confirmDelete) return;
+          const res = await fetch(`/api/messages/${id}`, { method: "DELETE" });
+          if (res.ok) {
+            item.remove();
+          } else {
+            alert("Erro ao apagar.");
+          }
+        };
+
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+
+        item.appendChild(textSpan);
+        item.appendChild(actions);
+        messagesList.appendChild(item);
+        messagesList.scrollTop = messagesList.scrollHeight;
+      }
+
+      function sendMessage() {
+        const user = usernameInput.value.trim();
+        const text = messageInput.value.trim();
+        if (user && text) {
+          socket.emit("chat message", { user, text });
+          messageInput.value = "";
+        }
+      }
+
+      if (localStorage.getItem("username")) {
+        usernameInput.value = localStorage.getItem("username");
+      }
+      usernameInput.addEventListener("change", () => {
+        localStorage.setItem("username", usernameInput.value);
+      });
+    </script>
+  </body>
+</html>
