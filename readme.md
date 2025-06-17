@@ -1,6 +1,6 @@
-# 💬 Chat em Tempo Real - Projeto de Docker 🐳 
+# 💬 Chat em Tempo Real - Projeto de WebSocket e Docker 🐳 
 
-Este projeto consiste em um **sistema de chat em tempo real**, com persistência de dados, desenvolvido para a disciplina de **Sistemas Operacionais**.
+Este projeto consiste em um **sistema de chat em tempo real**, com persistência de dados, desenvolvido para a disciplina de **Computação Distribuída**.
 
 Utilizamos **Node.js**, **Socket.io** e **MariaDB**, tudo integrado com **Docker Compose** para garantir portabilidade, isolamento e facilidade de execução.
 
@@ -57,9 +57,9 @@ Docker e Docker Compose instalados
 ## ✅ Passos:
 ### Clone o repositório:
 
-git clone https://github.com/rklein7/Trabalho-G1-Sistemas-Operacionais.git
+git clone https://github.com/rklein7/TrabalhoG2_Computacao_Distribuida.git
 
-cd Trabalho-G1-Sistemas-Operacionais
+cd TrabalhoG2_Computacao_Distribuida
 
 ### Execute o Docker Compose:
 
@@ -78,6 +78,7 @@ docker compose down
 
 ## 🧑‍💻  Integrantes:
 
-- **Eduardo da Silva Sichelero** 
+- **Bernardo Ferrari** 
+- **Enzo Schultz** 
 - **Rafael Augusto Klein**
 - **Vitor Augusto Feil Quadros** 
