@@ -1,12 +1,10 @@
-version: '3.8'  # Versão mais recente (ignorar warning é opcional)
 services:
-  # Backend (Node.js)
   backend:
     build: ./backend
     ports:
       - "3000:3000"
     depends_on:
-      - mariadb  # Define dependência do banco
+      - mariadb  
     environment:
       - DB_HOST=mariadb
       - DB_USER=root
@@ -15,7 +13,6 @@ services:
     networks:
       - chatnet
 
-  # Banco de Dados (MariaDB)
   mariadb:
     image: mariadb:latest
     ports:
@@ -24,11 +21,10 @@ services:
       - MYSQL_ROOT_PASSWORD=senha_root
       - MYSQL_DATABASE=chatdb
     volumes:
-      - mariadb-data:/var/lib/mysql  # Persistência dos dados
+      - mariadb-data:/var/lib/mysql  
     networks:
       - chatnet
 
-# Configurações de rede e volumes
 volumes:
   mariadb-data:
 

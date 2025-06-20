@@ -57,11 +57,11 @@ app.get('/api/messages', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const messages = await conn.query(`
-      SELECT * FROM messages 
+    const messages = await conn.query({ sql: `
+      SELECT id, user, text, timestamp FROM messages 
       ORDER BY timestamp DESC 
       LIMIT 30
-    `);
+    `, bigNumberStrings: true, supportBigNumbers: true });
     res.json(messages.reverse());
   } catch (err) {
     console.error('Erro ao buscar mensagens:', err.message);
@@ -122,7 +122,7 @@ io.on('connection', (socket) => {
         [msg.user, msg.text]
       );
       const newMessage = {
-        id: result.insertId,
+        id: result.insertId.toString(),
         user: msg.user,
         text: msg.text,
         timestamp: new Date()
