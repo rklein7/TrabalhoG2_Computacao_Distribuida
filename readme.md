@@ -60,6 +60,7 @@ Docker e Docker Compose instalados
 git clone https://github.com/rklein7/TrabalhoG2_Computacao_Distribuida.git
 
 cd TrabalhoG2_Computacao_Distribuida
+
 cd chatApp
 ### Execute o Docker Compose:
 
@@ -78,7 +79,6 @@ docker compose down
 
 ## 🧑‍💻  Integrantes:
 
-- **Bernardo Ferrari** 
 - **Enzo Schultz** 
 - **Rafael Augusto Klein**
 - **Vitor Augusto Feil Quadros** 
